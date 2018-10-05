@@ -1,4 +1,5 @@
-<p id="notice"><%= notice %></p>
+<section class="container-fluid">
+  <div class="row" data-product-id="<%= @product.id %>">
 
 <p>
   <strong>Name:</strong>
@@ -12,7 +13,7 @@
 
 <p>
   <strong>Image url:</strong>
-  <%= image_tag(@product.image_url, class: "img-fluid") if @product.image_url.present? %>
+  <%= image_tag(@product.image_url, class: "img-fluid", class: "img-zoom") if @product.image_url.present? %>
 </p>
 
 <p>
@@ -26,12 +27,29 @@
 </p>
 
 <p>
-  <strong>Average Rating:</strong>
-<%= @product.highest_rating_comment %>
+  <strong>Views:</strong>
+  <%= @product.views %>
 </p>
+
+<p>
+  <% if user_signed_in? %>
+    <%= form_with(url: payments_create_path) do |form| %>
+      <%= hidden_field_tag(:product_id, @product.id) %>
+      <%= render partial: "shared/stripe_checkout_button" %>
+    <% end %>
+  <% end %>
+</p>
+
+<p>Average Rating: id="average-rating" data-score="<%= @product.average_rating %>"></div> </p>
+<%= @product.highest_rating_comment %>
 
 <%= link_to 'Edit', edit_product_path(@product) %> |
 <%= link_to 'Back', products_path %>
 <%= link_to "Show Product", product_path(3) %>
 <!-- generates the HTML tag: -->
 <a href=”/products/3>Show Product</a>
+<%= render 'new_comment' %>
+<div class="alert alert-info" style="display:none" role="alert">A new comment was posted!</div>
+<%= render 'comments' %>
+
+<%= will_paginate @comments %>
